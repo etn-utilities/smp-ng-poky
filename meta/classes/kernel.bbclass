@@ -253,7 +253,7 @@ python do_devshell_prepend () {
     os.environ["LDFLAGS"] = ''
 }
 
-addtask bundle_initramfs after do_install before do_deploy
+addtask bundle_initramfs after do_compile before do_install
 
 kernel_do_compile() {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
@@ -319,7 +319,11 @@ kernel_do_install() {
 	install -d ${D}/${KERNEL_IMAGEDEST}
 	install -d ${D}/boot
 	for type in ${KERNEL_IMAGETYPES} ; do
-		install -m 0644 ${KERNEL_OUTPUT_DIR}/${type} ${D}/${KERNEL_IMAGEDEST}/${type}-${KERNEL_VERSION}
+		if [ -e ${KERNEL_OUTPUT_DIR}/${type}.initramfs ] && [ x"${INITRAMFS_IMAGE_BUNDLE}" = x1 ]; then
+			install -m 0644 ${KERNEL_OUTPUT_DIR}/${type}.initramfs ${D}/${KERNEL_IMAGEDEST}/${type}-${KERNEL_VERSION}
+		else
+			install -m 0644 ${KERNEL_OUTPUT_DIR}/${type} ${D}/${KERNEL_IMAGEDEST}/${type}-${KERNEL_VERSION}
+		fi
 	done
 	install -m 0644 System.map ${D}/boot/System.map-${KERNEL_VERSION}
 	install -m 0644 .config ${D}/boot/config-${KERNEL_VERSION}
