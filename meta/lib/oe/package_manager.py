@@ -1397,20 +1397,21 @@ class DpkgPM(OpkgDpkgPM):
 
 
     def remove(self, pkgs, with_dependencies=True):
-        if with_dependencies:
-            os.environ['APT_CONFIG'] = self.apt_conf_file
-            cmd = "%s purge %s" % (self.apt_get_cmd, ' '.join(pkgs))
-        else:
-            cmd = "%s --admindir=%s/var/lib/dpkg --instdir=%s" \
-                  " -P --force-depends %s" % \
-                  (bb.utils.which(os.getenv('PATH'), "dpkg"),
-                   self.target_rootfs, self.target_rootfs, ' '.join(pkgs))
-
-        try:
-            subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as e:
-            bb.fatal("Unable to remove packages. Command '%s' "
-                     "returned %d:\n%s" % (e.cmd, e.returncode, e.output.decode("utf-8")))
+        if pkgs:
+            if with_dependencies:
+                os.environ['APT_CONFIG'] = self.apt_conf_file
+                cmd = "%s purge %s" % (self.apt_get_cmd, ' '.join(pkgs))
+            else:
+                cmd = "%s --admindir=%s/var/lib/dpkg --instdir=%s" \
+                      " -P --force-depends %s" % \
+                      (bb.utils.which(os.getenv('PATH'), "dpkg"),
+                       self.target_rootfs, self.target_rootfs, ' '.join(pkgs))
+    
+            try:
+                subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT)
+            except subprocess.CalledProcessError as e:
+                bb.fatal("Unable to remove packages. Command '%s' "
+                         "returned %d:\n%s" % (e.cmd, e.returncode, e.output.decode("utf-8")))
 
     def write_index(self):
         self.deploy_dir_lock()

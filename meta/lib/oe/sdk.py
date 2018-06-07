@@ -42,16 +42,17 @@ def generate_locale_archive(d, rootfs):
     env = dict(os.environ)
     env["LOCALEARCHIVE"] = oe.path.join(localedir, "locale-archive")
 
-    for name in os.listdir(localedir):
-        path = os.path.join(localedir, name)
-        if os.path.isdir(path):
-            try:
-                cmd = ["cross-localedef", "--verbose"]
-                cmd += arch_options
-                cmd += ["--add-to-archive", path]
-                subprocess.check_output(cmd, env=env, stderr=subprocess.STDOUT)
-            except Exception as e:
-                bb.fatal("Cannot create locale archive: %s" % e.output)
+    if os.path.exists(localedir):
+        for name in os.listdir(localedir):
+            path = os.path.join(localedir, name)
+            if os.path.isdir(path):
+                try:
+                    cmd = ["cross-localedef", "--verbose"]
+                    cmd += arch_options
+                    cmd += ["--add-to-archive", path]
+                    subprocess.check_output(cmd, env=env, stderr=subprocess.STDOUT)
+                except Exception as e:
+                    bb.fatal("Cannot create locale archive: %s" % e.output)
 
 class Sdk(object, metaclass=ABCMeta):
     def __init__(self, d, manifest_dir):
