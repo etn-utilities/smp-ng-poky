@@ -100,6 +100,19 @@ SRC_URI = "https://download.qemu.org/${BPN}-${PV}.tar.xz \
 	   file://CVE-2020-14394.patch \
 	   file://CVE-2023-3354.patch \
 	   file://CVE-2023-3180.patch \
+	   file://CVE-2021-3638.patch \
+	   file://CVE-2023-1544.patch \
+	   file://CVE-2023-5088.patch \
+	   file://CVE-2024-24474.patch \
+	   file://CVE-2023-6693.patch \
+           file://scsi-disk-allow-MODE-SELECT-block-desriptor-to-set-the-block-size.patch \
+           file://scsi-disk-ensure-block-size-is-non-zero-and-changes-limited-to-bits-8-15.patch \
+           file://CVE-2023-42467.patch \
+           file://CVE-2023-6683.patch \
+           file://CVE-2024-7409-0001.patch \
+           file://CVE-2024-7409-0002.patch \
+           file://CVE-2024-7409-0003.patch \
+           file://CVE-2024-7409-0004.patch \
            "
 UPSTREAM_CHECK_REGEX = "qemu-(?P<pver>\d+(\.\d+)+)\.tar"
 
@@ -123,6 +136,10 @@ CVE_CHECK_IGNORE += "CVE-2018-18438"
 # https://bugzilla.redhat.com/show_bug.cgi?id=2167423
 # this bug related to windows specific.
 CVE_CHECK_IGNORE += "CVE-2023-0664"
+
+# As per https://bugzilla.redhat.com/show_bug.cgi?id=2203387
+# RHEL specific issue
+CVE_CHECK_IGNORE += "CVE-2023-2680"
 
 COMPATIBLE_HOST:mipsarchn32 = "null"
 COMPATIBLE_HOST:mipsarchn64 = "null"

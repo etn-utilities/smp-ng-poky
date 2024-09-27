@@ -343,7 +343,7 @@ while ``file2.patch`` would not be applied.
 You can find out more about the patching process in the
 ":ref:`overview-manual/concepts:patching`" section in
 the Yocto Project Overview and Concepts Manual and the
-":ref:`dev-manual/common-tasks:patching code`" section in the
+":ref:`dev-manual/new-recipe:patching code`" section in the
 Yocto Project Development Tasks Manual.
 
 .. _ref-tasks-populate_lic:
@@ -369,7 +369,7 @@ information.
 ``do_populate_sdk_ext``
 -----------------------
 
-Creates the file and directory structure for an installable extensible 
+Creates the file and directory structure for an installable extensible
 SDK (eSDK). See the ":ref:`overview-manual/concepts:sdk generation`"
 section in the Yocto Project Overview and Concepts Manual for more
 information.
@@ -481,9 +481,29 @@ You can run this task using BitBake as follows::
 
    $ bitbake -c cleanall recipe
 
-Typically, you would not normally use the ``cleanall`` task. Do so only
-if you want to start fresh with the :ref:`ref-tasks-fetch`
-task.
+You should never use the :ref:`ref-tasks-cleanall` task in a normal
+scenario. If you want to start fresh with the :ref:`ref-tasks-fetch` task,
+use instead::
+
+  $ bitbake -f -c fetch recipe
+
+.. note::
+
+   The reason to prefer ``bitbake -f -c fetch`` is that the
+   :ref:`ref-tasks-cleanall` task would break in some cases, such as::
+
+      $ bitbake -c fetch    recipe
+      $ bitbake -c cleanall recipe-native
+      $ bitbake -c unpack   recipe
+
+   because after step 1 there is a stamp file for the
+   :ref:`ref-tasks-fetch` task of ``recipe``, and it won't be removed at
+   step 2 because step 2 uses a different work directory. So the unpack task
+   at step 3 will try to extract the downloaded archive and fail as it has
+   been deleted in step 2.
+
+   Note that this also applies to BitBake from concurrent processes when a
+   shared download directory (:term:`DL_DIR`) is setup.
 
 .. _ref-tasks-cleansstate:
 
@@ -507,7 +527,19 @@ scratch is guaranteed.
 
 .. note::
 
-   The ``do_cleansstate`` task cannot remove sstate from a remote sstate
+   Using :ref:`ref-tasks-cleansstate` with a shared :term:`SSTATE_DIR` is
+   not recommended because it could trigger an error during the build of a
+   separate BitBake instance. This is because the builds check sstate "up
+   front" but download the files later, so it if is deleted in the
+   meantime, it will cause an error but not a total failure as it will
+   rebuild it.
+
+   The reliable and preferred way to force a new build is to use ``bitbake
+   -f`` instead.
+
+.. note::
+
+   The :ref:`ref-tasks-cleansstate` task cannot remove sstate from a remote sstate
    mirror. If you need to build a target from scratch using remote mirrors, use
    the "-f" option as follows::
 
@@ -522,7 +554,7 @@ scratch is guaranteed.
 Starts a shell in which an interactive Python interpreter allows you to
 interact with the BitBake build environment. From within this shell, you
 can directly examine and set bits from the data store and execute
-functions as if within the BitBake environment. See the ":ref:`dev-manual/common-tasks:using a python development shell`" section in
+functions as if within the BitBake environment. See the ":ref:`dev-manual/python-development-shell:using a Python development shell`" section in
 the Yocto Project Development Tasks Manual for more information about
 using ``pydevshell``.
 
@@ -532,7 +564,7 @@ using ``pydevshell``.
 ---------------
 
 Starts a shell whose environment is set up for development, debugging,
-or both. See the ":ref:`dev-manual/common-tasks:using a development shell`" section in the
+or both. See the ":ref:`dev-manual/development-shell:using a development shell`" section in the
 Yocto Project Development Tasks Manual for more information about using
 ``devshell``.
 
@@ -597,7 +629,7 @@ information on how the root filesystem is created.
 
 Boots an image and performs runtime tests within the image. For
 information on automatically testing images, see the
-":ref:`dev-manual/common-tasks:performing automated runtime testing`"
+":ref:`dev-manual/runtime-testing:performing automated runtime testing`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _ref-tasks-testimage_auto:
@@ -610,7 +642,7 @@ after it has been built. This task is enabled when you set
 :term:`TESTIMAGE_AUTO` equal to "1".
 
 For information on automatically testing images, see the
-":ref:`dev-manual/common-tasks:performing automated runtime testing`"
+":ref:`dev-manual/runtime-testing:performing automated runtime testing`"
 section in the Yocto Project Development Tasks Manual.
 
 Kernel-Related Tasks

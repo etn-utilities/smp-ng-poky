@@ -12,7 +12,7 @@ Project 1.6 Release (codename "daisy") from the prior release.
 The :ref:`archiver <ref-classes-archiver>` class has been rewritten
 and its configuration has been simplified. For more details on the
 source archiver, see the
-":ref:`dev-manual/common-tasks:maintaining open source license compliance during your product's lifecycle`"
+":ref:`dev-manual/licenses:maintaining open source license compliance during your product's lifecycle`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _migration-1.6-packaging-changes:
@@ -147,7 +147,7 @@ NFS mount, an error occurs.
 The ``PRINC`` variable has been deprecated and triggers a warning if
 detected during a build. For :term:`PR` increments on changes,
 use the PR service instead. You can find out more about this service in
-the ":ref:`dev-manual/common-tasks:working with a pr service`"
+the ":ref:`dev-manual/packages:working with a pr service`"
 section in the Yocto Project Development Tasks Manual.
 
 .. _migration-1.6-variable-changes-IMAGE_TYPES:
@@ -220,7 +220,7 @@ Package Test (ptest)
 
 Package Tests (ptest) are built but not installed by default. For
 information on using Package Tests, see the
-":ref:`dev-manual/common-tasks:testing packages with ptest`"
+":ref:`dev-manual/packages:testing packages with ptest`"
 section in the Yocto Project Development Tasks Manual. For information on the
 ``ptest`` class, see the ":ref:`ref-classes-ptest`" section.
 
@@ -341,39 +341,39 @@ Removed and Renamed Recipes
 
 The following recipes have been removed:
 
--  ``packagegroup-toolset-native`` - This recipe is largely unused.
+-  ``packagegroup-toolset-native`` --- this recipe is largely unused.
 
--  ``linux-yocto-3.8`` - Support for the Linux yocto 3.8 kernel has been
+-  ``linux-yocto-3.8`` --- support for the Linux yocto 3.8 kernel has been
    dropped. Support for the 3.10 and 3.14 kernels have been added with
    the ``linux-yocto-3.10`` and ``linux-yocto-3.14`` recipes.
 
--  ``ocf-linux`` - This recipe has been functionally replaced using
+-  ``ocf-linux`` --- this recipe has been functionally replaced using
    ``cryptodev-linux``.
 
--  ``genext2fs`` - ``genext2fs`` is no longer used by the build system
+-  ``genext2fs`` --- ``genext2fs`` is no longer used by the build system
    and is unmaintained upstream.
 
--  ``js`` - This provided an ancient version of Mozilla's javascript
+-  ``js`` --- this provided an ancient version of Mozilla's javascript
    engine that is no longer needed.
 
--  ``zaurusd`` - The recipe has been moved to the ``meta-handheld``
+-  ``zaurusd`` --- the recipe has been moved to the ``meta-handheld``
    layer.
 
--  ``eglibc 2.17`` - Replaced by the ``eglibc 2.19`` recipe.
+-  ``eglibc 2.17`` --- replaced by the ``eglibc 2.19`` recipe.
 
--  ``gcc 4.7.2`` - Replaced by the now stable ``gcc 4.8.2``.
+-  ``gcc 4.7.2`` --- replaced by the now stable ``gcc 4.8.2``.
 
--  ``external-sourcery-toolchain`` - this recipe is now maintained in
+-  ``external-sourcery-toolchain`` --- this recipe is now maintained in
    the ``meta-sourcery`` layer.
 
--  ``linux-libc-headers-yocto 3.4+git`` - Now using version 3.10 of the
+-  ``linux-libc-headers-yocto 3.4+git`` --- now using version 3.10 of the
    ``linux-libc-headers`` by default.
 
--  ``meta-toolchain-gmae`` - This recipe is obsolete.
+-  ``meta-toolchain-gmae`` --- this recipe is obsolete.
 
--  ``packagegroup-core-sdk-gmae`` - This recipe is obsolete.
+-  ``packagegroup-core-sdk-gmae`` --- this recipe is obsolete.
 
--  ``packagegroup-core-standalone-gmae-sdk-target`` - This recipe is
+-  ``packagegroup-core-standalone-gmae-sdk-target`` --- this recipe is
    obsolete.
 
 .. _migration-1.6-removed-classes:

@@ -27,7 +27,7 @@ Staging Directories in Sysroot Has Been Simplified
 The way directories are staged in sysroot has been simplified and
 introduces the new :term:`SYSROOT_DIRS`,
 :term:`SYSROOT_DIRS_NATIVE`, and ``SYSROOT_DIRS_BLACKLIST``
-(replaced by :term:`SYSROOT_DIRS_IGNORE` in version 3.5). See the
+(replaced by :term:`SYSROOT_DIRS_IGNORE` in version 4.0). See the
 :oe_lists:`v2 patch series on the OE-Core Mailing List
 </pipermail/openembedded-core/2016-May/121365.html>`
 for additional information.
@@ -70,9 +70,9 @@ Metadata Must Now Use Python 3 Syntax
 
 The metadata is now required to use Python 3 syntax. For help preparing
 metadata, see any of the many Python 3 porting guides available.
-Alternatively, you can reference the conversion commits for Bitbake and
-you can use :term:`OpenEmbedded-Core (OE-Core)` as a guide for changes. Following are
-particular areas of interest:
+Alternatively, you can reference the conversion commits for BitBake and
+you can use :term:`OpenEmbedded-Core (OE-Core)` as a guide for changes.
+Particular areas of interest are:
 
   - subprocess command-line pipes needing locale decoding
 
@@ -103,7 +103,7 @@ online package-manager support through SMART still require Python 2.
 ``buildtools-tarball`` Includes Python 3
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-``buildtools-tarball`` now includes Python 3.
+The :term:`buildtools` tarball now includes Python 3.
 
 .. _migration-2.2-uclibc-replaced-by-musl:
 
@@ -181,14 +181,8 @@ root filesystem, provides an image, and uses the ``nographic`` option::
 
    $ runqemu qemux86-64 tmp/deploy/images/qemux86-64/core-image-minimal-qemux86-64.ext4 tmp/deploy/images/qemux86-64/bzImage nographic
 
-Following is a list of variables that can be set in configuration files
-such as ``bsp.conf`` to enable the BSP to be booted by ``runqemu``:
-
-.. note::
-
-   "QB" means "QEMU Boot".
-
-::
+Here is a list of variables that can be set in configuration files
+such as ``bsp.conf`` to enable the BSP to be booted by ``runqemu``::
 
    QB_SYSTEM_NAME: QEMU name (e.g. "qemu-system-i386")
    QB_OPT_APPEND: Options to append to QEMU (e.g. "-show-cursor")
@@ -442,7 +436,7 @@ The following miscellaneous changes have occurred:
 -  :ref:`ref-classes-image`: Renamed COMPRESS(ION) to CONVERSION. This change
    means that ``COMPRESSIONTYPES``, ``COMPRESS_DEPENDS`` and
    ``COMPRESS_CMD`` are deprecated in favor of ``CONVERSIONTYPES``,
-   ``CONVERSION_DEPENDS`` and ``CONVERSION_CMD``. The ``COMPRESS*``
+   ``CONVERSION_DEPENDS`` and :term:`CONVERSION_CMD`. The ``COMPRESS*``
    variable names will still work in the 2.2 release but metadata that
    does not need to be backwards-compatible should be changed to use the
    new names as the ``COMPRESS*`` ones will be removed in a future

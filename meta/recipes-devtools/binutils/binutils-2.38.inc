@@ -18,7 +18,7 @@ SRCBRANCH ?= "binutils-2_38-branch"
 
 UPSTREAM_CHECK_GITTAGREGEX = "binutils-(?P<pver>\d+_(\d_?)*)"
 
-SRCREV ?= "dc2474e7d204c124ab5a21b4490aa46eb7e1d4c3"
+SRCREV ?= "ea5fe5d01e5a182ee7a0eddb54a702109a9f5931"
 BINUTILS_GIT_URI ?= "git://sourceware.org/git/binutils-gdb.git;branch=${SRCBRANCH};protocol=git"
 SRC_URI = "\
      ${BINUTILS_GIT_URI} \
@@ -34,7 +34,7 @@ SRC_URI = "\
      file://0013-Avoid-as-info-race-condition.patch \
      file://0014-CVE-2019-1010204.patch \
      file://0015-CVE-2022-38533.patch \
-     file://0016-CVE-2022-38126.patch \
+     file://0016-CVE-2022-35205.patch \
      file://0017-CVE-2022-38127-1.patch \
      file://0017-CVE-2022-38127-2.patch \
      file://0017-CVE-2022-38127-3.patch \
@@ -56,5 +56,20 @@ SRC_URI = "\
      file://0023-CVE-2023-25585.patch \
      file://0026-CVE-2023-1972.patch \
      file://0025-CVE-2023-25588.patch \
+     file://0027-CVE-2022-47008.patch \
+     file://0028-CVE-2022-47011.patch \
+     file://0029-CVE-2022-48065-1.patch \
+     file://0029-CVE-2022-48065-2.patch \
+     file://0029-CVE-2022-48065-3.patch \
+     file://0030-CVE-2022-44840.patch \
+     file://0031-CVE-2022-45703-1.patch \
+     file://0031-CVE-2022-45703-2.patch \
+     file://0031-CVE-2022-47695.patch \
+     file://CVE-2022-48063.patch \
+     file://0032-CVE-2022-47010.patch \
+     file://0033-CVE-2022-47007.patch \
+     file://0034-CVE-2022-48064.patch \
+     file://0035-CVE-2023-39129.patch \
+     file://0036-CVE-2023-39130.patch \
 "
 S  = "${WORKDIR}/git"

@@ -25,18 +25,11 @@ build a reference embedded OS called Poky.
       in the Yocto Project Development Tasks Manual for more
       information.
 
-   -  You may use Windows Subsystem For Linux v2 to set up a build host
-      using Windows 10.
-
-      .. note::
-
-         The Yocto Project is not compatible with WSLv1, it is
-         compatible but not officially supported nor validated with
-         WSLv2, if you still decide to use WSL please upgrade to WSLv2.
-
-      See the :ref:`dev-manual/start:setting up to use windows
-      subsystem for linux (wslv2)` section in the Yocto Project Development
-      Tasks Manual for more information.
+   -  You may use version 2 of Windows Subsystem For Linux (WSL 2) to set
+      up a build host using Windows 10 or later, Windows Server 2019 or later.
+      See the :ref:`dev-manual/start:setting up to use windows subsystem for
+      linux (wsl 2)` section in the Yocto Project Development Tasks Manual
+      for more information.
 
 If you want more conceptual or background information on the Yocto
 Project, see the :doc:`/overview-manual/index`.
@@ -47,7 +40,13 @@ Compatible Linux Distribution
 Make sure your :term:`Build Host` meets the
 following requirements:
 
--  50 Gbytes of free disk space
+-  At least &MIN_DISK_SPACE; Gbytes of free disk space, though
+   much more will help to run multiple builds and increase
+   performance by reusing build artifacts.
+
+-  At least &MIN_RAM; Gbytes of RAM, though a modern modern build host with as
+   much RAM and as many CPU cores as possible is strongly recommended to
+   maximize build performance.
 
 -  Runs a supported Linux distribution (i.e. recent releases of Fedora,
    openSUSE, CentOS, Debian, or Ubuntu). For a list of Linux
@@ -69,7 +68,7 @@ following requirements:
 If your build host does not meet any of these three listed version
 requirements, you can take steps to prepare the system so that you
 can still use the Yocto Project. See the
-:ref:`ref-manual/system-requirements:required git, tar, python and gcc versions`
+:ref:`ref-manual/system-requirements:required git, tar, python, make and gcc versions`
 section in the Yocto Project Reference Manual for information.
 
 Build Host Packages
@@ -77,11 +76,9 @@ Build Host Packages
 
 You must install essential host packages on your build host. The
 following command installs the host packages based on an Ubuntu
-distribution:
+distribution::
 
-.. code-block:: shell
-
-  $ sudo apt install &UBUNTU_HOST_PACKAGES_ESSENTIAL;
+   $ sudo apt install &UBUNTU_HOST_PACKAGES_ESSENTIAL;
 
 .. note::
 
@@ -254,10 +251,10 @@ an entire Linux distribution, including the toolchain, from source.
       To use such mirrors, uncomment the below lines in your ``conf/local.conf``
       file in the :term:`Build Directory`::
 
-         BB_SIGNATURE_HANDLER = "OEEquivHash"
-         BB_HASHSERVE = "auto"
          BB_HASHSERVE_UPSTREAM = "hashserv.yocto.io:8687"
-         SSTATE_MIRRORS ?= "file://.* https://sstate.yoctoproject.org/all/PATH;downloadfilename=PATH"
+         SSTATE_MIRRORS ?= "file://.* http://cdn.jsdelivr.net/yocto/sstate/all/PATH;downloadfilename=PATH"
+         BB_HASHSERVE = "auto"
+         BB_SIGNATURE_HANDLER = "OEEquivHash"
 
 #. **Start the Build:** Continue with the following command to build an OS
    image for the target, which is ``core-image-sato`` in this example:
@@ -370,7 +367,7 @@ Follow these steps to add a hardware layer:
 
    You can find
    more information on adding layers in the
-   :ref:`dev-manual/common-tasks:adding a layer using the \`\`bitbake-layers\`\` script`
+   :ref:`dev-manual/layers:adding a layer using the \`\`bitbake-layers\`\` script`
    section.
 
 Completing these steps has added the ``meta-altera`` layer to your Yocto
@@ -405,7 +402,7 @@ The following commands run the tool to create a layer named
 
 For more information
 on layers and how to create them, see the
-:ref:`dev-manual/common-tasks:creating a general layer using the \`\`bitbake-layers\`\` script`
+:ref:`dev-manual/layers:creating a general layer using the \`\`bitbake-layers\`\` script`
 section in the Yocto Project Development Tasks Manual.
 
 Where To Go Next

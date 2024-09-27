@@ -36,7 +36,7 @@ particular working environment and set of practices.
     equipment together and set up your development environment's
     hardware topology.
 
-    Here are possible roles:
+    Possible roles are:
 
     -  *Application Developer:* This type of developer does application
        level work on top of an existing software stack.
@@ -88,30 +88,18 @@ particular working environment and set of practices.
        For information about BitBake, see the
        :doc:`bitbake:index`.
 
-    It is relatively easy to set up Git services and create
-    infrastructure like :yocto_git:`/`, which is based on
-    server software called ``gitolite`` with ``cgit`` being used to
-    generate the web interface that lets you view the repositories. The
-    ``gitolite`` software identifies users using SSH keys and allows
+    It is relatively easy to set up Git services and create infrastructure like
+    :yocto_git:`/`, which is based on server software called
+    `Gitolite <https://gitolite.com>`__
+    with `cgit <https://git.zx2c4.com/cgit/about/>`__ being used to
+    generate the web interface that lets you view the repositories.
+    ``gitolite`` identifies users using SSH keys and allows
     branch-based access controls to repositories that you can control as
     little or as much as necessary.
 
-    .. note::
-
-       The setup of these services is beyond the scope of this manual.
-       However, here are sites describing how to perform setup:
-
-       -  `Gitolite <https://gitolite.com>`__: Information for
-          ``gitolite``.
-
-       -  `Interfaces, frontends, and
-          tools <https://git.wiki.kernel.org/index.php/Interfaces,_frontends,_and_tools>`__:
-          Documentation on how to create interfaces and frontends for
-          Git.
-
 5.  *Set up the Application Development Machines:* As mentioned earlier,
     application developers are creating applications on top of existing
-    software stacks. Following are some best practices for setting up
+    software stacks. Here are some best practices for setting up
     machines used for application development:
 
     -  Use a pre-built toolchain that contains the software stack
@@ -130,7 +118,7 @@ particular working environment and set of practices.
 
 6.  *Set up the Core Development Machines:* As mentioned earlier, core
     developers work on the contents of the operating system itself.
-    Following are some best practices for setting up machines used for
+    Here are some best practices for setting up machines used for
     developing images:
 
     -  Have the :term:`OpenEmbedded Build System` available on
@@ -223,7 +211,7 @@ particular working environment and set of practices.
     -  Maintain your Metadata in layers that make sense for your
        situation. See the ":ref:`overview-manual/yp-intro:the yocto project layer model`"
        section in the Yocto Project Overview and Concepts Manual and the
-       ":ref:`dev-manual/common-tasks:understanding and creating layers`"
+       ":ref:`dev-manual/layers:understanding and creating layers`"
        section for more information on layers.
 
     -  Separate the project's Metadata and code by using separate Git
@@ -246,14 +234,13 @@ particular working environment and set of practices.
     -  The Yocto Project community encourages you to send patches to the
        project to fix bugs or add features. If you do submit patches,
        follow the project commit guidelines for writing good commit
-       messages. See the
-       ":ref:`dev-manual/common-tasks:submitting a change to the yocto project`"
-       section.
+       messages. See the ":doc:`../contributor-guide/submit-changes`"
+       section in the Yocto Project and OpenEmbedded Contributor Guide.
 
     -  Send changes to the core sooner than later as others are likely
        to run into the same issues. For some guidance on mailing lists
-       to use, see the list in the
-       ":ref:`dev-manual/common-tasks:submitting a change to the yocto project`"
+       to use, see the lists in the
+       ":ref:`contributor-guide/submit-changes:finding a suitable mailing list`"
        section. For a description
        of the available mailing lists, see the ":ref:`resources-mailinglist`" section in
        the Yocto Project Reference Manual.
@@ -267,16 +254,16 @@ development using the Yocto Project. Your build host can be a native
 Linux machine (recommended), it can be a machine (Linux, Mac, or
 Windows) that uses `CROPS <https://github.com/crops/poky-container>`__,
 which leverages `Docker Containers <https://www.docker.com/>`__ or it
-can be a Windows machine capable of running Windows Subsystem For Linux
-v2 (WSL).
+can be a Windows machine capable of running version 2 of Windows Subsystem
+For Linux (WSL 2).
 
 .. note::
 
-   The Yocto Project is not compatible with
-   `Windows Subsystem for Linux v1 <https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux>`__.
-   It is compatible but not officially supported nor validated with
-   WSLv2. If you still decide to use WSL please upgrade to
-   `WSLv2 <https://docs.microsoft.com/en-us/windows/wsl/install-win10>`__.
+   The Yocto Project is not compatible with version 1 of
+   `Windows Subsystem for Linux <https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux>`__.
+   It is compatible but neither officially supported nor validated with
+   WSL 2. If you still decide to use WSL please upgrade to
+   `WSL 2 <https://learn.microsoft.com/en-us/windows/wsl/install>`__.
 
 Once your build host is set up to use the Yocto Project, further steps
 are necessary depending on what you want to accomplish. See the
@@ -302,7 +289,7 @@ Project Build Host:
    as these releases are frequently tested against the Yocto Project and
    officially supported. For a list of the distributions under
    validation and their status, see the ":ref:`Supported Linux
-   Distributions <detailed-supported-distros>`"
+   Distributions <system-requirements-supported-distros>`"
    section in the Yocto Project Reference Manual and the wiki page at
    :yocto_wiki:`Distribution Support </Distribution_Support>`.
 
@@ -321,10 +308,12 @@ Project Build Host:
 
    -  gcc &MIN_GCC_VERSION; or greater.
 
+   -  GNU make &MIN_MAKE_VERSION; or greater
+
    If your build host does not meet any of these listed version
    requirements, you can take steps to prepare the system so that you
    can still use the Yocto Project. See the
-   ":ref:`ref-manual/system-requirements:required git, tar, python and gcc versions`"
+   ":ref:`ref-manual/system-requirements:required git, tar, python, make and gcc versions`"
    section in the Yocto Project Reference Manual for information.
 
 4. *Install Development Host Packages:* Required development host
@@ -345,7 +334,10 @@ to use the Extensible SDK, see the ":doc:`/sdk-manual/extensible`" Chapter in th
 Project Application Development and the Extensible Software Development
 Kit (eSDK) manual. If you want to work on the kernel, see the :doc:`/kernel-dev/index`. If you are going to use
 Toaster, see the ":doc:`/toaster-manual/setup-and-use`"
-section in the Toaster User Manual.
+section in the Toaster User Manual. If you are a VSCode user, you can configure
+the `Yocto Project BitBake
+<https://marketplace.visualstudio.com/items?itemName=yocto-project.yocto-bitbake>`__
+extension accordingly.
 
 Setting Up to Use CROss PlatformS (CROPS)
 -----------------------------------------
@@ -437,37 +429,41 @@ section. If you are going to use the Extensible SDK container, see the
 Project Application Development and the Extensible Software Development
 Kit (eSDK) manual. If you are going to use the Toaster container, see
 the ":doc:`/toaster-manual/setup-and-use`"
-section in the Toaster User Manual.
+section in the Toaster User Manual. If you are a VSCode user, you can configure
+the `Yocto Project BitBake
+<https://marketplace.visualstudio.com/items?itemName=yocto-project.yocto-bitbake>`__
+extension accordingly.
 
-Setting Up to Use Windows Subsystem For Linux (WSLv2)
+Setting Up to Use Windows Subsystem For Linux (WSL 2)
 -----------------------------------------------------
 
-With `Windows Subsystem for Linux
-(WSLv2) <https://docs.microsoft.com/en-us/windows/wsl/wsl2-about>`__,
+With `Windows Subsystem for Linux (WSL 2)
+<https://learn.microsoft.com/en-us/windows/wsl/>`__,
 you can create a Yocto Project development environment that allows you
 to build on Windows. You can set up a Linux distribution inside Windows
 in which you can develop using the Yocto Project.
 
-Follow these general steps to prepare a Windows machine using WSLv2 as
+Follow these general steps to prepare a Windows machine using WSL 2 as
 your Yocto Project build host:
 
-1. *Make sure your Windows 10 machine is capable of running WSLv2:*
-   WSLv2 is only available for Windows 10 builds > 18917. To check which
-   build version you are running, you may open a command prompt on
-   Windows and execute the command "ver".
-   ::
+1. *Make sure your Windows machine is capable of running WSL 2:*
+
+   While all Windows 11 and Windows Server 2022 builds support WSL 2,
+   the first versions of Windows 10 and Windows Server 2019 didn't.
+   Check the minimum build numbers for `Windows 10
+   <https://learn.microsoft.com/en-us/windows/wsl/install-manual#step-2---check-requirements-for-running-wsl-2>`__
+   and for `Windows Server 2019
+   <https://learn.microsoft.com/en-us/windows/wsl/install-on-server>`__.
+
+   To check which build version you are running, you may open a command
+   prompt on Windows and execute the command "ver"::
 
       C:\Users\myuser> ver
 
       Microsoft Windows [Version 10.0.19041.153]
 
-   If your build is capable of running
-   WSLv2 you may continue, for more information on this subject or
-   instructions on how to upgrade to WSLv2 visit `Windows 10
-   WSLv2 <https://docs.microsoft.com/en-us/windows/wsl/wsl2-install>`__
-
-2. *Install the Linux distribution of your choice inside Windows 10:*
-   Once you know your version of Windows 10 supports WSLv2, you can
+2. *Install the Linux distribution of your choice inside WSL 2:*
+   Once you know your version of Windows supports WSL 2, you can
    install the distribution of your choice from the Microsoft Store.
    Open the Microsoft Store and search for Linux. While there are
    several Linux distributions available, the assumption is that your
@@ -476,31 +472,28 @@ your Yocto Project build host:
    making your selection, simply click "Get" to download and install the
    distribution.
 
-3. *Check your Linux distribution is using WSLv2:* Open a Windows
+3. *Check which Linux distribution WSL 2 is using:* Open a Windows
    PowerShell and run::
 
       C:\WINDOWS\system32> wsl -l -v
       NAME    STATE   VERSION
       *Ubuntu Running 2
 
-   Note the version column which says the WSL version
-   being used by your distribution, on compatible systems, this can be
-   changed back at any point in time.
+   Note that WSL 2 supports running as many different Linux distributions
+   as you want to install.
 
-4. *Optionally Orient Yourself on WSL:* If you are unfamiliar with WSL,
-   you can learn more here -
+4. *Optionally Get Familiar with WSL:* You can learn more on
    https://docs.microsoft.com/en-us/windows/wsl/wsl2-about.
 
 5. *Launch your WSL Distibution:* From the Windows start menu simply
    launch your WSL distribution just like any other application.
 
-6. *Optimize your WSLv2 storage often:* Due to the way storage is
-   handled on WSLv2, the storage space used by the undelying Linux
-   distribution is not reflected immedately, and since bitbake heavily
+6. *Optimize your WSL 2 storage often:* Due to the way storage is
+   handled on WSL 2, the storage space used by the underlying Linux
+   distribution is not reflected immediately, and since BitBake heavily
    uses storage, after several builds, you may be unaware you are
-   running out of space. WSLv2 uses a VHDX file for storage, this issue
-   can be easily avoided by manually optimizing this file often, this
-   can be done in the following way:
+   running out of space. As WSL 2 uses a VHDX file for storage, this issue
+   can be easily avoided by regularly optimizing this file in a manual way:
 
    1. *Find the location of your VHDX file:*
 
@@ -554,20 +547,23 @@ your Yocto Project build host:
 
 .. note::
 
-   The current implementation of WSLv2 does not have out-of-the-box
+   The current implementation of WSL 2 does not have out-of-the-box
    access to external devices such as those connected through a USB
    port, but it automatically mounts your ``C:`` drive on ``/mnt/c/``
    (and others), which you can use to share deploy artifacts to be later
    flashed on hardware through Windows, but your build directory should
    not reside inside this mountpoint.
 
-Once you have WSLv2 set up, everything is in place to develop just as if
+Once you have WSL 2 set up, everything is in place to develop just as if
 you were running on a native Linux machine. If you are going to use the
 Extensible SDK container, see the ":doc:`/sdk-manual/extensible`" Chapter in the Yocto
 Project Application Development and the Extensible Software Development
 Kit (eSDK) manual. If you are going to use the Toaster container, see
 the ":doc:`/toaster-manual/setup-and-use`"
-section in the Toaster User Manual.
+section in the Toaster User Manual. If you are a VSCode user, you can configure
+the `Yocto Project BitBake
+<https://marketplace.visualstudio.com/items?itemName=yocto-project.yocto-bitbake>`__
+extension accordingly.
 
 Locating Yocto Project Source Files
 ===================================
@@ -616,10 +612,14 @@ Use the following procedure to locate the latest upstream copy of the
 Accessing Index of Releases
 ---------------------------
 
-Yocto Project maintains an Index of Releases area that contains related
-files that contribute to the Yocto Project. Rather than Git
-repositories, these files are tarballs that represent snapshots in time
-of a given component.
+The Yocto Project also provides source archives of its releases, which
+are available on :yocto_dl:`/releases/yocto/`. Then, choose the subdirectory
+containing the release you wish to use, for example
+:yocto_dl:`yocto-&DISTRO; </releases/yocto/yocto-&DISTRO;/>`.
+
+You will find there source archives of individual components (if you wish
+to use them individually), and of the corresponding Poky release bundling
+a selection of these components.
 
 .. note::
 
@@ -655,7 +655,7 @@ Follow these steps to locate and download a particular tarball:
 Using the Downloads Page
 ------------------------
 
-The :yocto_home:`Yocto Project Website <>` uses a "DOWNLOADS" page
+The :yocto_home:`Yocto Project Website <>` uses a "RELEASES" page
 from which you can locate and download tarballs of any Yocto Project
 release. Rather than Git repositories, these files represent snapshot
 tarballs similar to the tarballs located in the Index of Releases
@@ -664,12 +664,13 @@ described in the ":ref:`dev-manual/start:accessing index of releases`" section.
 1. *Go to the Yocto Project Website:* Open The
    :yocto_home:`Yocto Project Website <>` in your browser.
 
-2. *Get to the Downloads Area:* Select the "DOWNLOADS" item from the
-   pull-down "SOFTWARE" tab menu near the top of the page.
+#. *Get to the Downloads Area:* Select the "RELEASES" item from the
+   pull-down "DEVELOPMENT" tab menu near the top of the page.
 
-3. *Select a Yocto Project Release:* Use the menu next to "RELEASE" to
-   display and choose a recent or past supported Yocto Project release
-   (e.g. &DISTRO_NAME_NO_CAP;, &DISTRO_NAME_NO_CAP_MINUS_ONE;, and so forth).
+#. *Select a Yocto Project Release:* On the top of the "RELEASE" page currently
+   supported releases are displayed, further down past supported Yocto Project
+   releases are visible. The "Download" links in the rows of the table there
+   will lead to the download tarballs for the release.
 
    .. note::
 
@@ -679,9 +680,9 @@ described in the ":ref:`dev-manual/start:accessing index of releases`" section.
    You can use the "RELEASE ARCHIVE" link to reveal a menu of all Yocto
    Project releases.
 
-4. *Download Tools or Board Support Packages (BSPs):* From the
-   "DOWNLOADS" page, you can download tools or BSPs as well. Just scroll
-   down the page and look for what you need.
+#. *Download Tools or Board Support Packages (BSPs):* Next to the tarballs you
+   will find download tools or BSPs as well. Just select a Yocto Project
+   release and look for what you need.
 
 Cloning and Checking Out Branches
 =================================

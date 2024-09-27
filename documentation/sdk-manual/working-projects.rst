@@ -172,19 +172,19 @@ variables and Makefile variables during development.
 The main point of this section is to explain the following three cases
 regarding variable behavior:
 
--  *Case 1 - No Variables Set in the Makefile Map to Equivalent
+-  *Case 1 --- No Variables Set in the Makefile Map to Equivalent
    Environment Variables Set in the SDK Setup Script:* Because matching
    variables are not specifically set in the ``Makefile``, the variables
    retain their values based on the environment setup script.
 
--  *Case 2 - Variables Are Set in the Makefile that Map to Equivalent
+-  *Case 2 --- Variables Are Set in the Makefile that Map to Equivalent
    Environment Variables from the SDK Setup Script:* Specifically
    setting matching variables in the ``Makefile`` during the build
    results in the environment settings of the variables being
    overwritten. In this case, the variables you set in the ``Makefile``
    are used.
 
--  *Case 3 - Variables Are Set Using the Command Line that Map to
+-  *Case 3 --- Variables Are Set Using the Command Line that Map to
    Equivalent Environment Variables from the SDK Setup Script:*
    Executing the ``Makefile`` from the command line results in the
    environment variables being overwritten. In this case, the
@@ -286,14 +286,14 @@ example:
       # CC=i586-poky-linux-gcc -m32 -march=i586 --sysroot=/opt/poky/2.5/sysroots/i586-poky-linux
       # CC="gcc"
       all: main.o module.o
-      	${CC} main.o module.o -o target_bin
+        ${CC} main.o module.o -o target_bin
       main.o: main.c module.h
-      	${CC} -I . -c main.c
+        ${CC} -I . -c main.c
       module.o: module.c
-      	module.h ${CC} -I . -c module.c
+        module.h ${CC} -I . -c module.c
       clean:
-      	rm -rf *.o
-      	rm target_bin
+        rm -rf *.o
+        rm target_bin
 
 4. *Make the Project:* Use the ``make`` command to create the binary
    output file. Because variables are commented out in the Makefile, the

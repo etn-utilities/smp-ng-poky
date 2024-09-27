@@ -69,8 +69,7 @@ to indicate the branch.
    You can use the :term:`KBRANCH` value to define an alternate branch typically
    with a machine override as shown here from the ``meta-yocto-bsp`` layer::
 
-           KBRANCH:edgerouter = "standard/edgerouter"
-
+      KBRANCH:beaglebone-yocto = "standard/beaglebone"
 
 The linux-yocto style recipes can optionally define the following
 variables:
@@ -183,7 +182,7 @@ the structure:
    order to define a base kernel policy or major kernel type to be
    reused across multiple BSPs, place the file in ``ktypes`` directory.
 
-These distinctions can easily become blurred - especially as out-of-tree
+These distinctions can easily become blurred --- especially as out-of-tree
 features slowly merge upstream over time. Also, remember that how the
 description files are placed is a purely logical organization and has no
 impact on the functionality of the kernel Metadata. There is no impact
@@ -304,8 +303,8 @@ The following listings show the ``build.scc`` file and part of the
                         .
                         .
                         .
- 	        char *dump_write = NULL, *files_source = NULL;
- 	        int opt;
+                char *dump_write = NULL, *files_source = NULL;
+                int opt;
       --
       2.10.1
 

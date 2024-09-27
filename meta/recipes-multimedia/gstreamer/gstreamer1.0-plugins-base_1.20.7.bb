@@ -10,6 +10,7 @@ SRC_URI = "https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-ba
            file://0001-ENGR00312515-get-caps-from-src-pad-when-query-caps.patch \
            file://0003-viv-fb-Make-sure-config.h-is-included.patch \
            file://0002-ssaparse-enhance-SSA-text-lines-parsing.patch \
+           file://CVE-2024-4453.patch \
            "
 SRC_URI[sha256sum] = "fde6696a91875095d82c1012b5777c28ba926047ffce08508e12c1d2c66f0057"
 
@@ -21,7 +22,8 @@ inherit gobject-introspection
 
 # opengl packageconfig factored out to make it easy for distros
 # and BSP layers to choose OpenGL APIs/platforms/window systems
-PACKAGECONFIG_GL ?= "${@bb.utils.contains('DISTRO_FEATURES', 'opengl', 'gles2 egl', '', d)}"
+PACKAGECONFIG_X11 = "${@bb.utils.contains('DISTRO_FEATURES', 'x11', 'opengl glx', '', d)}"
+PACKAGECONFIG_GL ?= "${@bb.utils.contains('DISTRO_FEATURES', 'opengl', 'gles2 egl ${PACKAGECONFIG_X11}', '', d)}"
 
 PACKAGECONFIG ??= " \
     ${GSTREAMER_ORC} \
@@ -32,7 +34,7 @@ PACKAGECONFIG ??= " \
 "
 
 OPENGL_APIS = 'opengl gles2'
-OPENGL_PLATFORMS = 'egl'
+OPENGL_PLATFORMS = 'egl glx'
 
 X11DEPENDS = "virtual/libx11 libsm libxrender libxv"
 X11ENABLEOPTS = "-Dx11=enabled -Dxvideo=enabled -Dxshm=enabled"
@@ -61,6 +63,7 @@ PACKAGECONFIG[gles2]        = ",,virtual/libgles2"
 
 # OpenGL platform packageconfigs
 PACKAGECONFIG[egl]          = ",,virtual/egl"
+PACKAGECONFIG[glx]          = ",,virtual/libgl"
 
 # OpenGL window systems (except for X11)
 PACKAGECONFIG[gbm]          = ",,virtual/libgbm libgudev libdrm"

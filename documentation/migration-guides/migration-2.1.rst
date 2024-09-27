@@ -343,7 +343,7 @@ This release supports generation of GLib Introspective Repository (GIR)
 files through GObject introspection, which is the standard mechanism for
 accessing GObject-based software from runtime environments. You can
 enable, disable, and test the generation of this data. See the
-":ref:`dev-manual/common-tasks:enabling gobject introspection support`"
+":ref:`dev-manual/gobject-introspection:enabling gobject introspection support`"
 section in the Yocto Project Development Tasks Manual for more
 information.
 
@@ -356,9 +356,9 @@ These additional changes exist:
 
 -  The minimum Git version has been increased to 1.8.3.1. If your host
    distribution does not provide a sufficiently recent version, you can
-   install the buildtools, which will provide it. See the
-   :ref:`ref-manual/system-requirements:required git, tar, python and gcc versions`
-   section for more information on the buildtools tarball.
+   install the :term:`buildtools`, which will provide it. See the
+   :ref:`ref-manual/system-requirements:required git, tar, python, make and gcc versions`
+   section for more information on the :term:`buildtools` tarball.
 
 -  The buggy and incomplete support for the RPM version 4 package
    manager has been removed. The well-tested and maintained support for

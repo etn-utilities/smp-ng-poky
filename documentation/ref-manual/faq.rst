@@ -22,7 +22,7 @@ Can I still use the Yocto Project?
 **A:** You can get the required tools on your host development system a
 couple different ways (i.e. building a tarball or downloading a
 tarball). See the
-":ref:`ref-manual/system-requirements:required git, tar, python and gcc versions`"
+":ref:`ref-manual/system-requirements:required git, tar, python, make and gcc versions`"
 section for steps on how to update your build tools.
 
 **Q:** How can you claim Poky / OpenEmbedded-Core is stable?
@@ -45,7 +45,7 @@ section for steps on how to update your build tools.
 **A:** Support for an additional board is added by creating a Board
 Support Package (BSP) layer for it. For more information on how to
 create a BSP layer, see the
-":ref:`dev-manual/common-tasks:understanding and creating layers`"
+":ref:`dev-manual/layers:understanding and creating layers`"
 section in the Yocto Project Development Tasks Manual and the
 :doc:`/bsp-guide/index`.
 
@@ -73,7 +73,7 @@ device.
 
 **A:** To add a package, you need to create a BitBake recipe. For
 information on how to create a BitBake recipe, see the
-":ref:`dev-manual/common-tasks:writing a new recipe`"
+":ref:`dev-manual/new-recipe:writing a new recipe`"
 section in the Yocto Project Development Tasks Manual.
 
 **Q:** Do I have to reflash my entire board with a new Yocto Project
@@ -201,7 +201,7 @@ You can find more information on licensing in the
 ":ref:`overview-manual/development-environment:licensing`"
 section in the Yocto
 Project Overview and Concepts Manual and also in the
-":ref:`dev-manual/common-tasks:maintaining open source license compliance during your product's lifecycle`"
+":ref:`dev-manual/licenses:maintaining open source license compliance during your product's lifecycle`"
 section in the Yocto Project Development Tasks Manual.
 
 **Q:** How do I disable the cursor on my touchscreen device?
@@ -312,7 +312,7 @@ HTTPS requests and direct them to the ``http://`` sources mirror. You
 can use ``file://`` URLs to point to local directories or network shares
 as well.
 
-Here are other options::
+Another option is to set::
 
    BB_NO_NETWORK = "1"
 
@@ -328,7 +328,7 @@ This statement
 limits the build system to pulling source from the :term:`PREMIRRORS` only.
 Again, this technique is useful for reproducing builds.
 
-Here is another technique::
+Here is yet another technique::
 
    BB_GENERATE_MIRROR_TARBALLS = "1"
 
@@ -364,7 +364,7 @@ redirect requests through proxy servers.
 
 **Q:** Can I get rid of build output so I can start over?
 
-**A:** Yes - you can easily do this. When you use BitBake to build an
+**A:** Yes --- you can easily do this. When you use BitBake to build an
 image, all the build output goes into the directory created when you run
 the build environment setup script (i.e.
 :ref:`structure-core-script`). By default, this :term:`Build Directory`
@@ -428,7 +428,7 @@ relatively normal and the second is not:
       build/tmp/sysroots/x86_64-linux/usr/bin
 
 Even if the paths look unusual,
-they both are correct - the first for a target and the second for a
+they both are correct --- the first for a target and the second for a
 native recipe. These paths are a consequence of the ``DESTDIR``
 mechanism and while they appear strange, they are correct and in
 practice very effective.

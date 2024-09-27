@@ -4,7 +4,7 @@
 Yocto Project Terms
 *******************
 
-Following is a list of terms and definitions users new to the Yocto Project
+Here is a list of terms and definitions users new to the Yocto Project
 development environment might find helpful. While some of these terms are
 universal, the list includes them just in case:
 
@@ -21,7 +21,7 @@ universal, the list includes them just in case:
 
       Information in append files extends or overrides the information in the
       similarly-named recipe file. For an example of an append file in use, see
-      the    ":ref:`dev-manual/common-tasks:appending other layers metadata with your layer`"
+      the    ":ref:`dev-manual/layers:appending other layers metadata with your layer`"
       section in the Yocto Project Development Tasks Manual.
 
       When you name an append file, you can use the "``%``" wildcard character
@@ -66,8 +66,8 @@ universal, the list includes them just in case:
       (i.e. :ref:`ref-manual/structure:\`\`oe-init-build-env\`\``). The
       :term:`TOPDIR` variable points to the Build Directory.
 
-      You have a lot of flexibility when creating the Build Directory.
-      Following are some examples that show how to create the directory.  The
+      You have a lot of flexibility when creating the :term:`Build Directory`.
+      Here are some examples that show how to create the directory.  The
       examples assume your :term:`Source Directory` is named ``poky``:
 
          -  Create the Build Directory inside your Source Directory and let
@@ -108,6 +108,24 @@ universal, the list includes them just in case:
       The system used to build images in a Yocto Project Development
       environment. The build system is sometimes referred to as the development
       host.
+
+   :term:`buildtools`
+      Build tools in binary form, providing required versions of development
+      tools (such as Git, GCC, Python and make), to run the OpenEmbedded build
+      system on a development host without such minimum versions.
+
+      See the ":ref:`system-requirements-buildtools`" paragraph in the
+      Reference Manual for details about downloading or building an archive
+      of such tools.
+
+   :term:`buildtools-extended`
+      A set of :term:`buildtools` binaries extended with additional development
+      tools, such as a required version of the GCC compiler to run the
+      OpenEmbedded build system.
+
+   :term:`buildtools-make`
+      A variant of :term:`buildtools`, just providing the required
+      version of ``make`` to run the OpenEmbedded build system.
 
    :term:`Classes`
       Files that provide for logic encapsulation and inheritance so that
@@ -192,6 +210,48 @@ universal, the list includes them just in case:
       of the supported image types that the Yocto Project provides, see the
       ":ref:`ref-manual/images:Images`" chapter.
 
+   :term:`Initramfs`
+      An Initial RAM Filesystem (:term:`Initramfs`) is an optionally compressed
+      :wikipedia:`cpio <Cpio>` archive which is extracted
+      by the Linux kernel into RAM in a special :wikipedia:`tmpfs <Tmpfs>`
+      instance, used as the initial root filesystem.
+
+      This is a replacement for the legacy init RAM disk ("initrd")
+      technique, booting on an emulated block device in RAM, but being less
+      efficient because of the overhead of going through a filesystem and
+      having to duplicate accessed file contents in the file cache in RAM,
+      as for any block device.
+
+      .. note::
+
+         As far as bootloaders are concerned, :term:`Initramfs` and "initrd"
+         images are still copied to RAM in the same way. That's why most
+         most bootloaders refer to :term:`Initramfs` images as "initrd"
+         or "init RAM disk".
+
+      This kind of mechanism is typically used for two reasons:
+
+      -  For booting the same kernel binary on multiple systems requiring
+         different device drivers. The :term:`Initramfs` image is then customized
+         for each type of system, to include the specific kernel modules
+         necessary to access the final root filesystem. This technique
+         is used on all GNU / Linux distributions for desktops and servers.
+
+      -  For booting faster. As the root filesystem is extracted into RAM,
+         accessing the first user-space applications is very fast, compared
+         to having to initialize a block device, to access multiple blocks
+         from it, and to go through a filesystem having its own overhead.
+         For example, this allows to display a splashscreen very early,
+         and to later take care of mounting the final root filesystem and
+         loading less time-critical kernel drivers.
+
+      This cpio archive can either be loaded to RAM by the bootloader,
+      or be included in the kernel binary.
+
+      For information on creating and using an :term:`Initramfs`, see the
+      ":ref:`dev-manual/building:building an initial ram filesystem (Initramfs) image`"
+      section in the Yocto Project Development Tasks Manual.
+
    :term:`Layer`
       A collection of related recipes. Layers allow you to consolidate related
       metadata to customize your build. Layers also isolate information used
@@ -205,7 +265,7 @@ universal, the list includes them just in case:
       ":ref:`overview-manual/yp-intro:The Yocto Project Layer
       Model`" section in the Yocto Project Overview and Concepts Manual. For
       more detailed information on layers, see the
-      ":ref:`dev-manual/common-tasks:Understanding and Creating
+      ":ref:`dev-manual/layers:Understanding and Creating
       Layers`" section in the Yocto Project Development Tasks Manual. For a
       discussion specifically on BSP Layers, see the ":ref:`bsp-guide/bsp:BSP
       Layers`" section in the Yocto Project Board Support Packages (BSP)
@@ -282,7 +342,7 @@ universal, the list includes them just in case:
       your Linux distribution.
 
       Another point worth noting is that historically within the Yocto
-      Project, recipes were referred to as packages - thus, the existence
+      Project, recipes were referred to as packages --- thus, the existence
       of several BitBake variables that are seemingly mis-named, (e.g.
       :term:`PR`, :term:`PV`, and
       :term:`PE`).
@@ -349,7 +409,7 @@ universal, the list includes them just in case:
 
       The OpenEmbedded Build System can generate such documentation for your
       project, in :term:`SPDX` format, based on all the metadata it used to
-      build the software images. See the ":ref:`dev-manual/common-tasks:creating
+      build the software images. See the ":ref:`dev-manual/sbom:creating
       a software bill of materials`" section of the Development Tasks manual.
 
    :term:`Source Directory`
@@ -398,7 +458,7 @@ universal, the list includes them just in case:
      Directory created by unpacking a released tarball as compared to
      cloning ``git://git.yoctoproject.org/poky``. When you unpack a
      tarball, you have an exact copy of the files based on the time of
-     release - a fixed release point. Any changes you make to your local
+     release --- a fixed release point. Any changes you make to your local
      files in the Source Directory are on top of the release and will
      remain local only. On the other hand, when you clone the ``poky`` Git
      repository, you have an active development repository with access to
@@ -420,7 +480,7 @@ universal, the list includes them just in case:
       provide an :term:`SBOM` associated to each software image.
 
       For details, see Wikipedia's :wikipedia:`SPDX page <Software_Package_Data_Exchange>`
-      and the ":ref:`dev-manual/common-tasks:creating a software bill of materials`"
+      and the ":ref:`dev-manual/sbom:creating a software bill of materials`"
       section of the Development Tasks manual.
 
    :term:`Task`

@@ -73,33 +73,33 @@ def get_patched_cves(d):
     import re
     import oe.patch
 
-    pn = d.getVar("PN")
-    cve_match = re.compile("CVE:( CVE\-\d{4}\-\d+)+")
+    cve_match = re.compile(r"CVE:( CVE-\d{4}-\d+)+")
 
     # Matches the last "CVE-YYYY-ID" in the file name, also if written
     # in lowercase. Possible to have multiple CVE IDs in a single
     # file name, but only the last one will be detected from the file name.
     # However, patch files contents addressing multiple CVE IDs are supported
     # (cve_match regular expression)
-
-    cve_file_name_match = re.compile(".*([Cc][Vv][Ee]\-\d{4}\-\d+)")
+    cve_file_name_match = re.compile(r".*(CVE-\d{4}-\d+)", re.IGNORECASE)
 
     patched_cves = set()
-    bb.debug(2, "Looking for patches that solves CVEs for %s" % pn)
-    for url in oe.patch.src_patches(d):
+    patches = oe.patch.src_patches(d)
+    bb.debug(2, "Scanning %d patches for CVEs" % len(patches))
+    for url in patches:
         patch_file = bb.fetch.decodeurl(url)[2]
-
-        # Remote compressed patches may not be unpacked, so silently ignore them
-        if not os.path.isfile(patch_file):
-            bb.warn("%s does not exist, cannot extract CVE list" % patch_file)
-            continue
 
         # Check patch file name for CVE ID
         fname_match = cve_file_name_match.search(patch_file)
         if fname_match:
             cve = fname_match.group(1).upper()
             patched_cves.add(cve)
-            bb.debug(2, "Found CVE %s from patch file name %s" % (cve, patch_file))
+            bb.debug(2, "Found %s from patch file name %s" % (cve, patch_file))
+
+        # Remote patches won't be present and compressed patches won't be
+        # unpacked, so say we're not scanning them
+        if not os.path.isfile(patch_file):
+            bb.note("%s is remote or compressed, not scanning content" % patch_file)
+            continue
 
         with open(patch_file, "r", encoding="utf-8") as f:
             try:
@@ -159,7 +159,7 @@ def cve_check_merge_jsons(output, data):
 
     for product in output["package"]:
         if product["name"] == data["package"][0]["name"]:
-            bb.error("Error adding the same package twice")
+            bb.error("Error adding the same package %s twice" % product["name"])
             return
 
     output["package"].append(data["package"][0])

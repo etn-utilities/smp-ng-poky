@@ -52,7 +52,7 @@ A development host or :term:`Build Host` is key to
 using the Yocto Project. Because the goal of the Yocto Project is to
 develop images or applications that run on embedded hardware,
 development of those images and applications generally takes place on a
-system not intended to run the software - the development host.
+system not intended to run the software --- the development host.
 
 You need to set up a development host in order to use it with the Yocto
 Project. Most find that it is best to have a native Linux machine
@@ -94,7 +94,7 @@ are several ways of working in the Yocto Project environment:
    through your Linux distribution and the Yocto Project.
 
    For a general flow of the build procedures, see the
-   ":ref:`dev-manual/common-tasks:building a simple image`"
+   ":ref:`dev-manual/building:building a simple image`"
    section in the Yocto Project Development Tasks Manual.
 
 -  *Board Support Package (BSP) Development:* Development of BSPs
@@ -131,6 +131,14 @@ are several ways of working in the Yocto Project environment:
    For steps that show you how to set up your development host to use
    Toaster and on how to use Toaster in general, see the
    :doc:`/toaster-manual/index`.
+
+-  *Using the VSCode Extension:* You can use the `Yocto Project BitBake
+   <https://marketplace.visualstudio.com/items?itemName=yocto-project.yocto-bitbake>`__
+   extension for Visual Studio Code to start your BitBake builds through a
+   graphical user interface.
+
+   Learn more about the VSCode Extension on the `extension's marketplace page
+   <https://marketplace.visualstudio.com/items?itemName=yocto-project.yocto-bitbake>`__.
 
 Yocto Project Source Repositories
 =================================
@@ -244,8 +252,8 @@ and so forth.
 
    For information on finding out who is responsible for (maintains) a
    particular area of code in the Yocto Project, see the
-   ":ref:`dev-manual/common-tasks:submitting a change to the yocto project`"
-   section of the Yocto Project Development Tasks Manual.
+   ":doc:`../contributor-guide/identify-component`"
+   section of the Yocto Project and OpenEmbedded Contributor Guide.
 
 The Yocto Project ``poky`` Git repository also has an upstream
 contribution Git repository named ``poky-contrib``. You can see all the
@@ -276,8 +284,8 @@ push them into the "contrib" area and subsequently request that the
 maintainer include them into an upstream branch. This process is called
 "submitting a patch" or "submitting a change." For information on
 submitting patches and changes, see the
-":ref:`dev-manual/common-tasks:submitting a change to the yocto project`"
-section in the Yocto Project Development Tasks Manual.
+":doc:`../contributor-guide/submit-changes`" section in the Yocto Project
+and OpenEmbedded Contributor Guide.
 
 In summary, there is a single point of entry for changes into the
 development branch of the Git repository, which is controlled by the
@@ -340,11 +348,10 @@ Book <https://book.git-scm.com>`__.
    software on which to develop. The Yocto Project has two scripts named
    ``create-pull-request`` and ``send-pull-request`` that ship with the
    release to facilitate this workflow. You can find these scripts in
-   the ``scripts`` folder of the
-   :term:`Source Directory`. For information
+   the ``scripts`` folder of the :term:`Source Directory`. For information
    on how to use these scripts, see the
-   ":ref:`dev-manual/common-tasks:using scripts to push a change upstream and request a pull`"
-   section in the Yocto Project Development Tasks Manual.
+   ":ref:`contributor-guide/submit-changes:using scripts to push a change upstream and request a pull`"
+   section in the Yocto Project and OpenEmbedded Contributor Guide.
 
 -  *Patch Workflow:* This workflow allows you to notify the maintainer
    through an email that you have a change (or patch) you would like
@@ -352,8 +359,8 @@ Book <https://book.git-scm.com>`__.
    this type of change, you format the patch and then send the email
    using the Git commands ``git format-patch`` and ``git send-email``.
    For information on how to use these scripts, see the
-   ":ref:`dev-manual/common-tasks:submitting a change to the yocto project`"
-   section in the Yocto Project Development Tasks Manual.
+   ":doc:`../contributor-guide/submit-changes`" section in the Yocto Project
+   and OpenEmbedded Contributor Guide.
 
 Git
 ===
@@ -655,5 +662,5 @@ Project uses in the ``meta/files/common-licenses`` directory in your
 For information that can help you maintain compliance with various open
 source licensing during the lifecycle of a product created using the
 Yocto Project, see the
-":ref:`dev-manual/common-tasks:maintaining open source license compliance during your product's lifecycle`"
+":ref:`dev-manual/licenses:maintaining open source license compliance during your product's lifecycle`"
 section in the Yocto Project Development Tasks Manual.

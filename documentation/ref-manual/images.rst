@@ -32,7 +32,7 @@ that contain image recipe files::
 
    $ ls meta*/recipes*/images/*.bb
 
-Following is a list of supported recipes:
+Here is a list of supported recipes:
 
 -  ``build-appliance-image``: An example virtual machine that contains
    all the pieces required to run builds using the build system as well
@@ -119,7 +119,7 @@ Following is a list of supported recipes:
    deployed to a separate partition so that you can boot into it and use
    it to deploy a second image to be tested. You can find more
    information about runtime testing in the
-   ":ref:`dev-manual/common-tasks:performing automated runtime testing`"
+   ":ref:`dev-manual/runtime-testing:performing automated runtime testing`"
    section in the Yocto Project Development Tasks Manual.
 
 -  ``core-image-testmaster-initramfs``: A RAM-based Initial Root
@@ -129,7 +129,7 @@ Following is a list of supported recipes:
 -  ``core-image-weston``: A very basic Wayland image with a terminal.
    This image provides the Wayland protocol libraries and the reference
    Weston compositor. For more information, see the
-   ":ref:`dev-manual/common-tasks:using wayland and weston`"
+   ":ref:`dev-manual/wayland:using wayland and weston`"
    section in the Yocto Project Development Tasks Manual.
 
 -  ``core-image-x11``: A very basic X11 image with a terminal.

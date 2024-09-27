@@ -29,8 +29,9 @@ contact us with other suggestions.
 #. **Get to know the layer index:**
    All layers can be found in the :oe_layerindex:`layer index <>`. Layers which
    have applied for Yocto Project Compatible status (structure continuity
-   assurance and testing) can be found in the :yocto_home:`Yocto Project Compatible index
-   </software-over/layer/>`. Generally check the Compatible layer index first,
+   assurance and testing) can be found in the :yocto_home:`Yocto Project
+   Compatible Layers </development/yocto-project-compatible-layers/>` page.
+   Generally check the Compatible layer index first,
    and if you don't find the necessary layer check the general layer index. The
    layer index is an original artifact from the Open Embedded Project. As such,
    that index doesn't have the curating and testing that the Yocto Project
@@ -131,7 +132,7 @@ contact us with other suggestions.
    say "bitbake foo" where "foo" is the name for a specific recipe.  As you
    become more advanced using the Yocto Project, and if builds are failing, it
    can be useful to make sure the fetch itself works as desired. Here are some
-   valuable links: :ref:`dev-manual/common-tasks:Using a Development
+   valuable links: :ref:`dev-manual/development-shell:Using a Development
    Shell` for information on how to build and run a specific task using
    devshell. Also, the :ref:`SDK manual shows how to build out a specific recipe
    <sdk-manual/extensible:use \`\`devtool modify\`\` to modify the source of an existing component>`.
@@ -211,6 +212,13 @@ contact us with other suggestions.
    * **Learn About Toaster**: Toaster is a web interface to the Yocto Project's
      OpenEmbedded build system. If you are interested in using this type of
      interface to create images, see the :doc:`/toaster-manual/index`.
+
+   * **Discover the VSCode extension**: The `Yocto Project BitBake
+     <https://marketplace.visualstudio.com/items?itemName=yocto-project.yocto-bitbake>`__
+     extension for the Visual Studio Code IDE provides language features and
+     commands for working with the Yocto Project. If you are interested in using
+     this extension, visit its `marketplace page
+     <https://marketplace.visualstudio.com/items?itemName=yocto-project.yocto-bitbake>`__.
 
    * **Have Available the Yocto Project Reference Manual**: Unlike the rest of
      the Yocto Project manual set, this manual is comprised of material suited
