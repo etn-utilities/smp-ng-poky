@@ -45,6 +45,9 @@ do_install_ptest () {
 
 	 # Remove files with host-specific configuration for building native binaries
 	 rm ${D}${PTEST_PATH}/Makefile.config ${D}${PTEST_PATH}/xconfig.h ${D}${PTEST_PATH}/xconfig.sh
+
+         # create an empty file that is checked for existence by makerel test
+         touch ${D}${PTEST_PATH}/win32/Makefile
 }
 
 python populate_packages:prepend() {
@@ -56,7 +59,7 @@ python populate_packages:prepend() {
             '${PN}-ptest%s', '%s', recursive=True, match_path=True)
 }
 
-RDEPENDS:${PN}-ptest += "${PN}-modules ${PN}-doc sed"
+RDEPENDS:${PN}-ptest += "${PN}-modules ${PN}-doc sed procps-ps"
 
 # The perl-ptest package contains Perl internal modules and generating file
 # dependencies for it causes problems.

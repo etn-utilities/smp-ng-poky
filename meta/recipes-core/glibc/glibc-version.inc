@@ -1,8 +1,8 @@
-SRCBRANCH ?= "release/2.35/master"
-PV = "2.35"
-SRCREV_glibc ?= "cbceb903c4d770acc7e4ba5641036516830ed69b"
-SRCREV_localedef ?= "794da69788cbf9bf57b59a852f9f11307663fa87"
+SRCBRANCH ?= "release/2.40/master"
+PV = "2.40+git"
+SRCREV_glibc ?= "efb710034e4c5e734d100cc4ef1b1e27d4315825"
+SRCREV_localedef ?= "fab74f31b3811df543e24b6de47efdf45b538abc"
 
-GLIBC_GIT_URI ?= "git://sourceware.org/git/glibc.git"
+GLIBC_GIT_URI ?= "git://sourceware.org/git/glibc.git;protocol=https"
 
 UPSTREAM_CHECK_GITTAGREGEX = "(?P<pver>\d+\.\d+(\.(?!90)\d+)*)"

@@ -5,10 +5,10 @@ HOMEPAGE = "https://developer.gnome.org/glib/"
 # pcre is under BSD;
 # docs/reference/COPYING is with a 'public domain'-like license!
 LICENSE = "LGPL-2.1-or-later & BSD-3-Clause & PD"
-LIC_FILES_CHKSUM = "file://COPYING;md5=4fbd65380cdd255951079008b364516c \
-                    file://glib/glib.h;beginline=4;endline=17;md5=b88abb7f3ad09607e71cb9d530155906 \
-                    file://gmodule/COPYING;md5=4fbd65380cdd255951079008b364516c \
-                    file://gmodule/gmodule.h;beginline=4;endline=17;md5=b88abb7f3ad09607e71cb9d530155906 \
+LIC_FILES_CHKSUM = "file://COPYING;md5=41890f71f740302b785c27661123bff5 \
+                    file://glib/glib.h;beginline=4;endline=17;md5=72f7cc2847407f65d8981ef112e4e630 \
+                    file://LICENSES/LGPL-2.1-or-later.txt;md5=41890f71f740302b785c27661123bff5 \
+                    file://gmodule/gmodule.h;beginline=4;endline=17;md5=72f7cc2847407f65d8981ef112e4e630 \
                     file://docs/reference/COPYING;md5=f51a5100c17af6bae00735cd791e1fcc"
 BUGTRACKER = "http://bugzilla.gnome.org"
 SECTION = "libs"
@@ -21,31 +21,34 @@ DEPENDS = "glib-2.0-native \
            virtual/libintl \
            virtual/libiconv \
            libffi \
-           libpcre \
+           libpcre2 \
            zlib"
 
 PACKAGES += "${PN}-codegen ${PN}-utils"
 
 LEAD_SONAME = "libglib-2.0.*"
 
-inherit meson gettext gtk-doc pkgconfig ptest-gnome upstream-version-is-even bash-completion gio-module-cache manpages
-
-DEPENDS:append:class-target = "${@' gtk-doc' if d.getVar('GTKDOC_ENABLED') == 'True' else ''}"
-
-GTKDOC_MESON_OPTION = "gtk_doc"
+inherit meson gettext gi-docgen pkgconfig ptest-gnome upstream-version-is-even bash-completion gio-module-cache manpages gobject-introspection-data
 
 S = "${WORKDIR}/glib-${PV}"
 
+GIDOCGEN_MESON_OPTION = "documentation"
+
 PACKAGECONFIG ??= "libmount \
+                   ${@bb.utils.contains('GI_DATA_ENABLED', 'True', 'introspection', '', d)} \
                    ${@bb.utils.contains('PTEST_ENABLED', '1', 'tests', '', d)}"
+PACKAGECONFIG:class-native = ""
+
 PACKAGECONFIG[libmount] = "-Dlibmount=enabled,-Dlibmount=disabled,util-linux"
-PACKAGECONFIG[manpages] = "-Dman=true, -Dman=false, libxslt-native xmlto-native"
-# libelf is auto-detected without a configuration option
-PACKAGECONFIG[libelf] = ",,elfutils"
+PACKAGECONFIG[manpages] = "-Dman-pages=enabled, -Dman-pages=disabled, python3-docutils-native"
+PACKAGECONFIG[libelf] = "-Dlibelf=enabled,-Dlibelf=disabled,elfutils"
 PACKAGECONFIG[tests] = "-Dinstalled_tests=true,-Dinstalled_tests=false,"
 PACKAGECONFIG[selinux] = "-Dselinux=enabled,-Dselinux=disabled,libselinux"
+PACKAGECONFIG[introspection] = "-Dintrospection=enabled,-Dintrospection=disabled,gobject-introspection-native gobject-introspection glib-2.0-initial"
 
-EXTRA_OEMESON = "-Ddtrace=false -Dfam=false -Dsystemtap=false"
+EXTRA_OEMESON = "-Ddtrace=disabled -Dsystemtap=disabled -Dsysprof=disabled"
+
+EXTRA_OEMESON:append:class-target = " ${@'-Dgir_dir_prefix=${libdir}' if d.getVar('MULTILIBS') else ''}"
 
 do_configure:prepend() {
 	sed -i -e '1s,#!.*,#!${USRBINPATH}/env python3,' ${S}/gio/gdbus-2.0/codegen/gdbus-codegen.in
@@ -54,19 +57,18 @@ do_configure:prepend() {
 FILES:${PN} = "${libdir}/lib*${SOLIBS} \
                ${libdir}/gio \
                ${libexecdir}/*gio-querymodules \
-               ${datadir}/glib-2.0/schemas"
-
-FILES:${PN}-utils += "${bindir}/glib-genmarshal \
-                      ${bindir}/glib-gettextize \
-                      ${bindir}/glib-mkenums \
-                      ${bindir}/glib-compile-resources"
-
+               ${libexecdir}/*gio-launch-desktop \
+               ${datadir}/glib-2.0/dtds \
+               ${datadir}/glib-2.0/schemas \
+               ${libdir}/girepository-*/*.typelib \
+"
 FILES:${PN}-dev += "${libdir}/glib-2.0/include \
                     ${libdir}/gio/modules/lib*${SOLIBSDEV} \
                     ${libdir}/gio/modules/*.la \
                     ${datadir}/glib-2.0/gettext/po/Makefile.in.in \
                     ${datadir}/glib-2.0/schemas/gschema.dtd \
                     ${datadir}/glib-2.0/valgrind/glib.supp \
+                    ${datadir}/gir-*/*.gir ${libdir}/gir-*/*.gir \
                     ${datadir}/gettext/its"
 FILES:${PN}-dbg += "${datadir}/glib-2.0/gdb ${datadir}/gdb"
 FILES:${PN}-codegen = "${datadir}/glib-2.0/codegen/*.py \
@@ -117,6 +119,11 @@ do_install:append () {
         mkdir -p ${D}${libdir}/gio/modules
 }
 
+do_install:append:class-native () {
+	# Link gio-querymodules into ${bindir} as otherwise tools like meson won't find it
+        ln -rs ${D}${libexecdir}/gio-querymodules ${D}${bindir}
+}
+
 do_install:append:class-target () {
 	# Tests are only installed on targets, not native builds.  Separating this out
 	# keeps glib-2.0-native from depending on DISTRO_FEATURES
@@ -130,14 +137,22 @@ do_install:append:class-target () {
                 mv ${D}${datadir}/installed-tests/glib/static-link.test ${D}${datadir}/installed-tests/glib/${MLPREFIX}static-link.test
         fi
 	fi
+        # https://gitlab.gnome.org/GNOME/glib/-/issues/2810
+        rm -f ${D}${datadir}/installed-tests/glib/thread-pool-slow.test
 }
-
+do_install:append:class-target:libc-musl () {
+        # Remove failing tests on musl libc systems, this helps set baseline for musl testing
+        # they remain to be rootcaused and fixed but marked known failures here.
+        for t in convert.test collate.test gdatetime.test date.test converter-stream.test option-context.test; do
+                rm -rf ${D}${datadir}/installed-tests/glib/$t
+        done
+}
 # As we do not build python3 for windows, makes no sense to ship the script that's using it
 do_install:append:mingw32() {
         rm -f ${D}${bindir}/gtester-report
 }
 
-CODEGEN_PYTHON_RDEPENDS = "python3 python3-distutils python3-xml"
+CODEGEN_PYTHON_RDEPENDS = "python3 python3-packaging python3-xml"
 CODEGEN_PYTHON_RDEPENDS:mingw32 = ""
 
 RDEPENDS:${PN}-codegen += "${CODEGEN_PYTHON_RDEPENDS}"
@@ -148,6 +163,7 @@ RDEPENDS:${PN}-ptest += "\
             coreutils \
             libgcc \
             dbus \
+            desktop-file-utils \
             gnome-desktop-testing \
             tzdata \
             tzdata-americas \
@@ -167,6 +183,12 @@ RDEPENDS:${PN}-ptest += "\
             python3-modules \
             ${@bb.utils.contains('GI_DATA_ENABLED', 'True', 'python3-dbusmock', '', d)} \
             ${PN}-codegen \
+            locale-base-de-de \
+            locale-base-es-es \
+            locale-base-en-gb \
+            locale-base-en-us \
+            locale-base-fr-fr \
+            locale-base-ru-ru \
            "
 
 RDEPENDS:${PN}-ptest:append:libc-glibc = "\
@@ -181,18 +203,64 @@ RDEPENDS:${PN}-ptest:append:libc-glibc = "\
             glibc-gconv-iso8859-15 \
             glibc-charmap-invariant \
             glibc-localedata-translit-cjk-variants \
-            locale-base-tr-tr \
             locale-base-lt-lt \
             locale-base-ja-jp.euc-jp \
             locale-base-fa-ir \
-            locale-base-ru-ru \
-            locale-base-de-de \
             locale-base-hr-hr \
             locale-base-el-gr \
-            locale-base-fr-fr \
-            locale-base-es-es \
-            locale-base-en-gb \
-            locale-base-en-us \
             locale-base-pl-pl \
             locale-base-pl-pl.iso-8859-2 \
+            locale-base-tr-tr \
            "
+
+PE = "1"
+
+SHRT_VER = "${@oe.utils.trim_version("${PV}", 2)}"
+
+SRC_URI = "${GNOME_MIRROR}/glib/${SHRT_VER}/glib-${PV}.tar.xz \
+           file://run-ptest \
+           file://0001-Fix-DATADIRNAME-on-uclibc-Linux.patch \
+           file://0001-Remove-the-warning-about-deprecated-paths-in-schemas.patch \
+           file://0001-Install-gio-querymodules-as-libexec_PROGRAM.patch \
+           file://0001-Do-not-write-bindir-into-pkg-config-files.patch \
+           file://0001-meson-Run-atomics-test-on-clang-as-well.patch \
+           file://0001-gio-tests-resources.c-comment-out-a-build-host-only-.patch \
+           file://0010-Do-not-hardcode-python-path-into-various-tools.patch \
+           file://skip-timeout.patch \
+           "
+SRC_URI:append:class-native = " file://relocate-modules.patch \ 
+                                file://0001-meson.build-do-not-enable-pidfd-features-on-native-g.patch \
+                              "
+
+SRC_URI[sha256sum] = "37dd0877fe964cd15e9a2710b044a1830fb1bd93652a6d0cb6b8b2dff187c709"
+
+# Find any meson cross files in FILESPATH that are relevant for the current
+# build (using siteinfo) and add them to EXTRA_OEMESON.
+inherit siteinfo
+def find_meson_cross_files(d):
+    if bb.data.inherits_class('native', d):
+        return ""
+
+    thisdir = os.path.normpath(d.getVar("THISDIR"))
+    import collections
+    sitedata = siteinfo_data(d)
+    # filename -> found
+    files = collections.OrderedDict()
+    for path in d.getVar("FILESPATH").split(":"):
+        for element in sitedata:
+            filename = os.path.normpath(os.path.join(path, "meson.cross.d", element))
+            sanitized_path = filename.replace(thisdir, "${THISDIR}")
+            if sanitized_path == filename:
+                if os.path.exists(filename):
+                    bb.error("Cannot add '%s' to --cross-file, because it's not relative to THISDIR '%s' and sstate signature would contain this full path" % (filename, thisdir))
+                continue
+            files[filename.replace(thisdir, "${THISDIR}")] = os.path.exists(filename)
+
+    items = ["--cross-file=" + k for k,v in files.items() if v]
+    d.appendVar("EXTRA_OEMESON", " " + " ".join(items))
+    items = ["%s:%s" % (k, "True" if v else "False") for k,v in files.items()]
+    d.appendVarFlag("do_configure", "file-checksums", " " + " ".join(items))
+
+python () {
+    find_meson_cross_files(d)
+}
