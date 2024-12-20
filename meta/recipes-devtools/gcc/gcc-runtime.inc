@@ -2,7 +2,7 @@ require gcc-configure-common.inc
 
 SUMMARY = "Runtime libraries from GCC"
 
-# Over-ride the LICENSE set by gcc-${PV}.inc to remove "& GPL-3.0-only"
+# Over-ride the LICENSE set by gcc-${PV}.inc to remove "& GPLv3"
 # All gcc-runtime packages are now covered by the runtime exception.
 LICENSE = "GPL-3.0-with-GCC-exception"
 
@@ -16,7 +16,9 @@ EXTRA_OECONF_PATHS = "\
 
 EXTRA_OECONF:append:linuxstdbase = " --enable-clocale=gnu"
 EXTRA_OECONF:append = " --cache-file=${B}/config.cache"
-EXTRA_OECONF:append:libc-newlib = " --with-newlib"
+EXTRA_OECONF:append:libc-newlib = " --with-newlib --with-target-subdir"
+EXTRA_OECONF:append:libc-picolibc = " --with-newlib --with-target-subdir"
+EXTRA_OECONF:append:libc-baremetal = " --with-target-subdir"
 
 # Disable ifuncs for libatomic on arm conflicts -march/-mcpu
 EXTRA_OECONF:append:arm = " libat_cv_have_ifunc=no "
@@ -26,6 +28,7 @@ DISABLE_STATIC:class-nativesdk ?= ""
 
 # Newlib does not support symbol versioning on libsdtcc++
 SYMVERS_CONF:libc-newlib = ""
+SYMVERS_CONF:libc-picolibc = ""
 
 # Building with thumb enabled on armv6t fails
 ARM_INSTRUCTION_SET:armv6 = "arm"
@@ -37,31 +40,19 @@ RUNTIMELIBITM:nios2 = ""
 RUNTIMELIBITM:microblaze = ""
 RUNTIMELIBITM:riscv32 = ""
 RUNTIMELIBITM:riscv64 = ""
+RUNTIMELIBITM:loongarch64 = ""
 RUNTIMELIBSSP ?= ""
 RUNTIMELIBSSP:mingw32 ?= "libssp"
 
 RUNTIMETARGET = "${RUNTIMELIBSSP} libstdc++-v3 libgomp libatomic ${RUNTIMELIBITM} \
-    ${@bb.utils.contains_any('FORTRAN', [',fortran',',f77'], 'libquadmath', '', d)} \
+    ${@bb.utils.contains('FORTRAN', ',fortran', 'libquadmath', '', d)} \
 "
 # Only build libstdc++ for newlib
 RUNTIMETARGET:libc-newlib = "libstdc++-v3"
+RUNTIMETARGET:libc-picolibc = "libstdc++-v3"
 
 # libiberty
 # libgfortran needs separate recipe due to libquadmath dependency
-
-# Relative path to be repaced into debug info
-REL_S = "/usr/src/debug/${PN}/${EXTENDPE}${PV}-${PR}"
-
-DEBUG_PREFIX_MAP:class-target = " \
-   -fdebug-prefix-map=${WORKDIR}/${MLPREFIX}recipe-sysroot= \
-   -fdebug-prefix-map=${WORKDIR}/recipe-sysroot-native= \
-   -fdebug-prefix-map=${S}=${REL_S} \
-   -fdebug-prefix-map=${S}/include=${REL_S}/libstdc++-v3/../include \
-   -fdebug-prefix-map=${S}/libiberty=${REL_S}/libstdc++-v3/../libiberty \
-   -fdebug-prefix-map=${S}/libgcc=${REL_S}/libstdc++-v3/../libgcc \
-   -fdebug-prefix-map=${B}=${REL_S} \
-   -ffile-prefix-map=${B}/${HOST_SYS}/libstdc++-v3/include=${includedir}/c++/${BINV} \
-   "
 
 do_configure () {
 	export CXX="${CXX} -nostdinc++ -L${WORKDIR}/dummylib"
@@ -76,8 +67,7 @@ do_configure () {
 		mkdir -p ${B}/${TARGET_SYS}/$d/
 		cd ${B}/${TARGET_SYS}/$d/
 		chmod a+x ${S}/$d/configure
-		relpath=${@os.path.relpath("${S}/$d", "${B}/${TARGET_SYS}/$d")}
-		$relpath/configure ${CONFIGUREOPTS} ${EXTRA_OECONF}
+		${S}/$d/configure ${CONFIGUREOPTS} ${EXTRA_OECONF}
 		if [ "$d" = "libgcc" ]; then
 			(cd ${B}/${TARGET_SYS}/libgcc; oe_runmake enable-execute-stack.c unwind.h md-unwind-support.h sfp-machine.h gthr-default.h)
 		fi
@@ -98,12 +88,14 @@ do_install () {
 		cd ${B}/${TARGET_SYS}/$d/
 		oe_runmake 'DESTDIR=${D}' MULTIBUILDTOP=${B}/${TARGET_SYS}/$d/ install
 	done
+	install -d ${D}${datadir}/gdb/auto-load/${libdir}
+	mv ${D}${libdir}/libstdc++*-gdb.py ${D}${datadir}/gdb/auto-load/${libdir}
 	if [ -d ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/include ]; then
 		install -d ${D}${libdir}/${TARGET_SYS}/${BINV}/include 
 		mv ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/include/* ${D}${libdir}/${TARGET_SYS}/${BINV}/include
 		rmdir --ignore-fail-on-non-empty -p ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/include
 	fi
-	rm -rf ${D}${infodir}/libgomp.info ${D}${infodir}/dir
+	rm -rf ${D}${infodir}/libgomp.info* ${D}${infodir}/dir
 	rm -rf ${D}${infodir}/libitm.info ${D}${infodir}/dir
 	rm -rf ${D}${infodir}/libquadmath.info ${D}${infodir}/dir
 	if [ -d ${D}${libdir}/gcc/${TARGET_SYS}/${BINV}/finclude ]; then
@@ -111,6 +103,9 @@ do_install () {
 	fi
 	if [ -d ${D}${infodir} ]; then
 		rmdir --ignore-fail-on-non-empty -p ${D}${infodir}
+	fi
+	if [ -d ${D}${libdir} ]; then
+		rmdir --ignore-fail-on-non-empty -p ${D}${libdir}
 	fi
 }
 
@@ -145,7 +140,7 @@ do_install:append:class-target () {
 		ln -s ../${TARGET_SYS}/ext ${D}${includedir}/c++/${BINV}/${TARGET_ARCH}${TARGET_VENDOR_MULTILIB_ORIGINAL}-${TARGET_OS}/ext
 	fi
 
-	if [ "${TARGET_ARCH}" == "x86_64" -a "${MULTILIB_VARIANTS}" != "" ];then
+	if [ "${TARGET_ARCH}" = "x86_64" -a "${MULTILIB_VARIANTS}" != "" ];then
 		ln -sf ../${X86ARCH32}${TARGET_VENDOR}-${TARGET_OS} ${D}${includedir}/c++/${BINV}/${TARGET_ARCH}${TARGET_VENDOR}-${TARGET_OS}/32
 	fi
 
@@ -172,8 +167,6 @@ PACKAGES = "\
     libstdc++-precompile-dev \
     libstdc++-dev \
     libstdc++-staticdev \
-    libg2c \
-    libg2c-dev \
     libssp \
     libssp-dev \
     libssp-staticdev \
@@ -195,18 +188,14 @@ RRECOMMENDS:${PN}-dbg = ""
 
 # include python debugging scripts
 FILES:${PN}-dbg += "\
-    ${libdir}/libstdc++.*-gdb.py \
     ${datadir}/gcc-${BINV}/python/libstdcxx \
+    ${datadir}/gdb/auto-load \
 "
-
-FILES:libg2c = "${target_libdir}/libg2c.so.*"
-SUMMARY:libg2c = "Companion runtime library for g77"
-FILES:libg2c-dev = "\
-    ${libdir}/libg2c.so \
-    ${libdir}/libg2c.a \
-    ${libdir}/libfrtbegin.a \
-"
-SUMMARY:libg2c-dev = "Companion runtime library for g77 - development files"
+# Needed by libstdcxx pretty printer, however it is disabled intentionally
+# as it adds build time dependency on bash and some cases e.g. no GPL3 cases
+# bash is not availbale and builds fails
+# So it needs to be added manually to images sadly.
+# RDEPENDS:${PN}-dbg += "python3-datetime"
 
 FILES:libstdc++ = "${libdir}/libstdc++.so.*"
 SUMMARY:libstdc++ = "GNU standard C++ library"
@@ -303,6 +292,7 @@ do_check[prefuncs] += "extend_recipe_sysroot"
 do_check[prefuncs] += "check_prepare"
 do_check[dirs] = "${WORKDIR}/dejagnu ${B}"
 do_check[nostamp] = "1"
+do_check[network] = "1"
 do_check() {
     export DEJAGNU="${WORKDIR}/dejagnu/site.exp"
 
