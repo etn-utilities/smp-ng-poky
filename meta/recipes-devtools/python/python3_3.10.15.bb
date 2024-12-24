@@ -35,6 +35,7 @@ SRC_URI = "http://www.python.org/ftp/python/${PV}/Python-${PV}.tar.xz \
            file://0001-setup.py-Do-not-detect-multiarch-paths-when-cross-co.patch \
            file://deterministic_imports.patch \
            file://0001-Avoid-shebang-overflow-on-python-config.py.patch \
+           file://0001-test_storlines-skip-due-to-load-variability.patch \
            "
 
 SRC_URI:append:class-native = " \
@@ -43,7 +44,7 @@ SRC_URI:append:class-native = " \
            file://12-distutils-prefix-is-inside-staging-area.patch \
            file://0001-Don-t-search-system-for-headers-libraries.patch \
            "
-SRC_URI[sha256sum] = "afb74bf19130e7a47d10312c8f5e784f24e0527981eab68e20546cfb865830b8"
+SRC_URI[sha256sum] = "aab0950817735172601879872d937c1e4928a57c409ae02369ec3d91dccebe79"
 
 # exclude pre-releases for both python 2.x and 3.x
 UPSTREAM_CHECK_REGEX = "[Pp]ython-(?P<pver>\d+(\.\d+)+).tar"
@@ -62,6 +63,8 @@ CVE_CHECK_IGNORE += "CVE-2020-15523 CVE-2022-26488"
 CVE_CHECK_IGNORE += "CVE-2015-20107"
 # Not an issue, in fact expected behaviour
 CVE_CHECK_IGNORE += "CVE-2023-36632"
+# Fixes are included in 3.10.15
+CVE_CHECK_IGNORE += "CVE-2023-27043 CVE-2024-6232 CVE-2024-7592"
 
 PYTHON_MAJMIN = "3.10"
 
@@ -105,7 +108,8 @@ CACHED_CONFIGUREVARS = " \
 PACKAGECONFIG:class-target ??= "readline gdbm ${@bb.utils.filter('DISTRO_FEATURES', 'lto', d)}"
 PACKAGECONFIG:class-native ??= "readline gdbm"
 PACKAGECONFIG:class-nativesdk ??= "readline gdbm"
-PACKAGECONFIG[readline] = ",,readline"
+PACKAGECONFIG[readline] = "--with-readline=readline,,readline,,,editline"
+PACKAGECONFIG[editline] = "--with-readline=editline,,libedit,,,readline"
 # Use profile guided optimisation by running PyBench inside qemu-user
 PACKAGECONFIG[pgo] = "--enable-optimizations,,qemu-native"
 PACKAGECONFIG[tk] = ",,tk"
@@ -117,7 +121,7 @@ do_configure:prepend () {
     cat > ${B}/Modules/Setup.local << EOF
 *disabled*
 ${@bb.utils.contains('PACKAGECONFIG', 'gdbm', '', '_gdbm _dbm', d)}
-${@bb.utils.contains('PACKAGECONFIG', 'readline', '', 'readline', d)}
+${@bb.utils.contains_any('PACKAGECONFIG', 'readline editline', '', 'readline', d)}
 EOF
 }
 

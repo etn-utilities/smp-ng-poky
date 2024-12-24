@@ -7,18 +7,19 @@ SECTION = "libs/network"
 LICENSE = "Apache-2.0"
 LIC_FILES_CHKSUM = "file://LICENSE.txt;md5=c75985e733726beaba57bc5253e96d04"
 
-SRC_URI = "http://www.openssl.org/source/openssl-${PV}.tar.gz \
+SRC_URI = "https://github.com/openssl/openssl/releases/download/openssl-${PV}/openssl-${PV}.tar.gz \
            file://run-ptest \
            file://0001-buildinfo-strip-sysroot-and-debug-prefix-map-from-co.patch \
            file://afalg.patch \
            file://0001-Configure-do-not-tweak-mips-cflags.patch \
+           file://CVE-2024-9143.patch \
            "
 
 SRC_URI:append:class-nativesdk = " \
            file://environment.d-openssl.sh \
            "
 
-SRC_URI[sha256sum] = "1761d4f5b13a1028b9b6f3d4b8e17feb0cedc9370f6afe61d7193d2cdce83323"
+SRC_URI[sha256sum] = "23c666d0edf20f14249b3d8f0368acaee9ab585b09e1de82107c66e1f3ec9533"
 
 inherit lib_package multilib_header multilib_script ptest perlnative
 MULTILIB_SCRIPTS = "${PN}-bin:${bindir}/c_rehash"
@@ -185,6 +186,7 @@ PTEST_BUILD_HOST_PATTERN = "perl_version ="
 do_install_ptest () {
 	install -d ${D}${PTEST_PATH}/test
 	install -m755 ${B}/test/p_test.so ${D}${PTEST_PATH}/test
+	install -m755 ${B}/test/p_minimal.so ${D}${PTEST_PATH}/test
 	install -m755 ${B}/test/provider_internal_test.cnf ${D}${PTEST_PATH}/test
 
 	# Prune the build tree
