@@ -29,7 +29,7 @@ SRC_URI:append:class-target = " \
            file://encodefix.patch \
 "
 
-SRC_URI[perl.sha256sum] = "357951a491b0ba1ce3611263922feec78ccd581dddc24a446b033e25acf242a1"
+SRC_URI[perl.sha256sum] = "5b12f62863332b2a5f54102af9cdf8c010877e4bf3294911edbd594b2a1e8ede"
 
 S = "${WORKDIR}/perl-${PV}"
 
@@ -47,6 +47,9 @@ PACKAGECONFIG[gdbm] = ",-Ui_gdbm,gdbm"
 
 # Don't generate comments in enc2xs output files. They are not reproducible
 export ENC2XS_NO_COMMENTS = "1"
+
+# Duplicate of CVE-2023-47038, which has already been patched as of perl_5.34.3
+CVE_CHECK_IGNORE:append = " CVE-2023-47100"
 
 do_configure:prepend() {
     cp -rfp ${STAGING_DATADIR_NATIVE}/perl-cross/* ${S}

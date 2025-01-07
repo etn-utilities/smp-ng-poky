@@ -16,6 +16,19 @@ CVE_CHECK_IGNORE += "CVE-2019-1010022 CVE-2019-1010023 CVE-2019-1010024"
 # Potential patch at https://sourceware.org/bugzilla/show_bug.cgi?id=22853
 CVE_CHECK_IGNORE += "CVE-2019-1010025"
 
+# glibc https://web.nvd.nist.gov/view/vuln/detail?vulnId=CVE-2023-4527
+# This vulnerability was introduced in 2.36 by commit
+# f282cdbe7f436c75864e5640a409a10485e9abb2 resolv: Implement no-aaaa stub resolver option
+# so our version is not yet vulnerable
+# See https://sourceware.org/bugzilla/show_bug.cgi?id=30842
+CVE_CHECK_IGNORE += "CVE-2023-4527"
+
+# To avoid these in cve-check reports since the recipe version did not change
+CVE_CHECK_IGNORE += " \
+    CVE-2023-0687 CVE-2023-4813 CVE-2023-4806 CVE-2023-4911 CVE-2023-5156 \
+    CVE-2024-2961 CVE-2024-33599 CVE-2024-33600 CVE-2024-33601 CVE-2024-33602 \
+"
+
 DEPENDS += "gperf-native bison-native"
 
 NATIVESDKFIXES ?= ""
@@ -50,6 +63,7 @@ SRC_URI =  "${GLIBC_GIT_URI};branch=${SRCBRANCH};name=glibc \
            file://0024-fix-create-thread-failed-in-unprivileged-process-BZ-.patch \
            \
            file://0001-Revert-Linux-Implement-a-useful-version-of-_startup_.patch \
+           file://0002-get_nscd_addresses-Fix-subscript-typos-BZ-29605.patch \
            "
 S = "${WORKDIR}/git"
 B = "${WORKDIR}/build-${TARGET_SYS}"
